@@ -5,5 +5,6 @@ let func = function () {
   let foooooo = "cccccccc";
   let car = "carrrrr";
   let hi = "hello";
+  let zzz = 'zzxzxzx'
   return foo;
 };
