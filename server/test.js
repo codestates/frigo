@@ -1,6 +1,7 @@
 import express from "express";
-let func = function () {
-  let foo = "aaaaaaa";
-  let fooo = "bbbbbb";
-  return foo;
-};
+
+const app = express();
+
+app.listen(400, () => {
+  console.log("hello world");
+});

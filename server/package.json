@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "start": "node index.js"
   },
   "author": "",
   "license": "ISC",
@@ -15,7 +16,7 @@
     "eslint-plugin-prettier": "^4.0.0",
     "prettier": "2.5.1"
   },
-  "type": "commonjs",
+  "type": "module",
   "dependencies": {
     "axios": "^0.26.0",
     "cookie-parser": "^1.4.6",
