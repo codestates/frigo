@@ -3,6 +3,6 @@ let func = function () {
   let foo = "aaaaaaa";
   let fooo = "bbbbbb";
   let foooooo = 'cccccccc';
-  let foooooooo = 'dddddd';
+  let foooooooo = 'eeeeeee';
   return foo;
 };
