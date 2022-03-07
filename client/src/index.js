@@ -1,7 +1,10 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import App from "./App";
+import { BrowserRouter as Router } from "react-router-dom";
 import { createGlobalStyle, ThemeProvider } from "styled-components";
+import { QueryClient, QueryClientProvider } from "react-query";
+import { ReactQueryDevtools } from "react-query/devtools";
 import { lightTheme } from "./Theme";
 
 const Globalstyle = createGlobalStyle`
@@ -32,10 +35,12 @@ const Globalstyle = createGlobalStyle`
   }
   body {
     line-height: 1;
-    background-color: ${(props) => props.theme.bgColor.skyblue};
+    background-color: ${(props) => props.theme.bgColor.white};
     font-family: 'Noto Sans KR', sans-serif;
-    color: ${(props) => props.theme.textColor};
+    color: ${(props) => props.theme.textColor.black};
     font-size: ${(props) => props.theme.fontSize.tiny};
+    height: 100%;
+    width: 100%;
   }
   ol, ul {
     list-style: none;
@@ -52,14 +57,25 @@ const Globalstyle = createGlobalStyle`
     border-collapse: collapse;
     border-spacing: 0;
   }
+  a {
+    text-decoration: none;
+    color: inherit;
+  }
 `;
+
+const client = new QueryClient();
 
 ReactDOM.render(
   <React.StrictMode>
-    <ThemeProvider theme={lightTheme}>
-      <Globalstyle />
-      <App />
-    </ThemeProvider>
+    <Router>
+      <QueryClientProvider client={client}>
+        <ThemeProvider theme={lightTheme}>
+          <Globalstyle />
+          <App />
+          <ReactQueryDevtools initialIsOpen={true} />
+        </ThemeProvider>
+      </QueryClientProvider>
+    </Router>
   </React.StrictMode>,
   document.getElementById("root"),
 );
