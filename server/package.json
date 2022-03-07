@@ -4,18 +4,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "lint": "eslint .",
-    "start": "node index.js"
+    "start": "nodemon index.js"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "eslint": "^8.10.0",
-    "eslint-config-prettier": "^8.4.0",
-    "eslint-plugin-prettier": "^4.0.0",
     "prettier": "2.5.1"
   },
-  "type": "module",
   "dependencies": {
     "axios": "^0.26.0",
     "cookie-parser": "^1.4.6",
