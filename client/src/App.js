@@ -6,19 +6,24 @@ import Signup from "./Routes/Signup";
 import Myfrigo from "./Routes/Myfrigo";
 import Recipe from "./Routes/Recipe";
 import Post from "./Routes/Post";
-import QuickPost from "./Routes/QuickPost";
+import QuickPost from "./Components/QuickPost";
 import Nav from "./Components/Nav";
 import MyPage from "./Routes/Mypage";
 import Logout from "./Routes/Logout";
+import EidtPost from "./Components/EditPost";
 
 function App() {
-  const [isLogin, setIsLogin] = useState(true);
-  const [userinfo, setUserinfo] = useState(null);
+  const [isLogin, setIsLogin] = useState(false);
+  const [userinfo, setUserinfo] = useState({ username: "빅토르" });
+  const [accessToken, setAccessToken] = useState(null);
   const navigate = useNavigate();
 
   const isAuthenticated = async () => {
-    const data = await axios.get("https://localhost:3000/auth", {
-      headers: { "Content-Type": "application/json" },
+    const data = await axios.get("http://localhost:4000/auth", {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: accessToken,
+      },
       withCredentials: true,
     });
 
@@ -28,12 +33,14 @@ function App() {
       navigate("/");
     }
   };
-  const handleResponseSuccess = () => {
+  const handleResponseSuccess = (accessToken) => {
+    setAccessToken(accessToken);
     isAuthenticated();
   };
   const handleLogout = () => {
-    axios.post("https://localhost:3000/logout").then((res) => {
+    axios.post("http://localhost:4000/logout").then((res) => {
       setUserinfo(null);
+      setAccessToken(null);
       setIsLogin(false);
       navigate("/");
     });
@@ -49,18 +56,42 @@ function App() {
       <Routes>
         <Route
           path="/"
-          element={<Login handleResponseSuccess={handleResponseSuccess} />}
+          element={
+            <Login
+              handleResponseSuccess={handleResponseSuccess}
+              accessToken={accessToken}
+              isLogin={isLogin}
+              setIsLogin={setIsLogin}
+              userinfo={userinfo}
+              setAccessToken={setAccessToken}
+            />
+          }
         ></Route>
         <Route path="/signup" element={<Signup />}></Route>
-        <Route path="/myfrigo" element={<Myfrigo isLogin={isLogin} />}></Route>
-        <Route path="/mypage" element={<MyPage userinfo={userinfo} />}></Route>
+        <Route
+          path="/myfrigo"
+          element={<Myfrigo isLogin={isLogin} accessToken={accessToken} />}
+        ></Route>
+        <Route
+          path="/mypage"
+          element={<MyPage userinfo={userinfo} accessToken={accessToken} />}
+        ></Route>
         <Route path="/recipe" element={<Recipe />}></Route>
-        <Route path="/post" element={<Post />}>
-          <Route path=":tags" element={<QuickPost />} />
+        <Route
+          path="/post"
+          element={<Post isLogin={isLogin} accessToken={accessToken} />}
+        >
+          <Route
+            path=":tags"
+            element={
+              <QuickPost userinfo={userinfo} accessToken={accessToken} />
+            }
+          />
+          <Route path="edit/:id" element={<EidtPost />} />
         </Route>
         <Route
           path="/logout"
-          element={<Logout handleLogout={handleLogout} />}
+          element={<Logout handleLogout={handleLogout} isLogin={isLogin} />}
         ></Route>
       </Routes>
     </>

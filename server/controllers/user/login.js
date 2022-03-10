@@ -35,6 +35,7 @@ module.exports = async (req, res) => {
       },
     })
     .then((data) => {
+      // console.log("여기", data);
       if (!data) {
         return res.status(401).send("invalid authorized");
       } else {

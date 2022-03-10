@@ -4,7 +4,6 @@ import App from "./App";
 import { BrowserRouter as Router } from "react-router-dom";
 import { createGlobalStyle, ThemeProvider } from "styled-components";
 import { QueryClient, QueryClientProvider } from "react-query";
-import { ReactQueryDevtools } from "react-query/devtools";
 import { lightTheme } from "./Theme";
 
 const Globalstyle = createGlobalStyle`
@@ -72,7 +71,6 @@ ReactDOM.render(
         <ThemeProvider theme={lightTheme}>
           <Globalstyle />
           <App />
-          <ReactQueryDevtools initialIsOpen={true} />
         </ThemeProvider>
       </QueryClientProvider>
     </Router>

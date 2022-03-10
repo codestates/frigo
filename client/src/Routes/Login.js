@@ -1,10 +1,10 @@
 import { Link } from "react-router-dom";
-import styled from "styled-components";
 import { useForm } from "react-hook-form";
-import { lightTheme } from "../Theme";
-import Frigo from "../Images/frigo.png";
+import { useState, useEffect } from "react";
+import styled from "styled-components";
 import axios from "axios";
-import { useState } from "react";
+import Frigo from "../Images/frigo.png";
+import { gitHubClientId } from "../variable";
 
 const ErrorMessage = styled.span`
   position: fixed;
@@ -42,7 +42,7 @@ const TitleForm = styled.form`
 const LoginForm = styled.form`
   background-color: ${(props) => props.theme.bgColor.green};
   width: 20rem;
-  height: 10rem;
+  height: 12rem;
   padding: 1rem;
   margin-top: 10px;
   border: 2px solid;
@@ -88,14 +88,47 @@ const Button = styled.button`
   border-radius: 5px;
   cursor: pointer;
 `;
-const LoginBtn = styled(Button)``;
+const LoginBtn = styled(Button)`
+  margin-bottom: 7px;
+`;
+
+const OAuthBox = styled.div``;
+
+const OAuthBtn = styled.button`
+  margin-top: 8px;
+  border: 2px solid;
+  border-radius: 10px;
+  cursor: pointer;
+`;
 
 const CommentLine = styled.div`
-  margin-top: 20px;
+  margin-top: 10px;
   font-size: 15px;
 `;
 
-function Login({ handleResponseSuccess }) {
+const LoginBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`;
+
+const GitHubBtn = styled.button`
+  font-size: ${(props) => props.theme.fontSize.small};
+  border: 2px solid;
+  border-radius: 5px;
+  cursor: pointer;
+`;
+
+function Login({
+  handleResponseSuccess,
+  accessToken,
+  isLogin,
+  setIsLogin,
+  userinfo,
+  setAccessToken,
+}) {
+  const [data, setData] = useState(null);
   const [errorMessage, setErrorMessage] = useState("");
   const {
     register,
@@ -111,15 +144,20 @@ function Login({ handleResponseSuccess }) {
 
       axios
         .post(
-          "https://localhost:4000/signin",
+          "http://localhost:4000/login",
           { email, password },
           {
-            headers: { "Content-Type": "application/json" },
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: accessToken,
+            },
             withCredentials: true,
           },
         )
-        .then(() => {
-          handleResponseSuccess();
+        .then((res) => {
+          const accessToken = res.data.accessToken;
+
+          handleResponseSuccess(accessToken);
         })
         .catch((err) => console.log(err));
     } else {
@@ -127,43 +165,95 @@ function Login({ handleResponseSuccess }) {
     }
   };
 
+  //github OAuth
+  const socialLogin = () => {
+    window.location.assign(
+      `https://github.com/login/oauth/authorize?client_id=${gitHubClientId}`,
+    );
+  };
+  const handleGitHub = () => {
+    socialLogin();
+  };
+
+  useEffect(() => {
+    const url = new URL(window.location.href);
+    const search = url.search;
+    if (search) {
+      const authorizationCode = search.split("=")[1];
+      console.log(authorizationCode);
+      axios
+        .post(
+          "http://localhost:4000/callback",
+          { authorizationCode },
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+            withCredentials: true,
+          },
+        )
+        .then((response) => {
+          console.log(response.data.access_Token);
+          setAccessToken(response.data.access_Token);
+          setIsLogin(true);
+        });
+    }
+  }, []);
+
   return (
     <>
       <Center>
         <Img src={Frigo} />
         <TitleForm>
-          <TitleLine>Frigo</TitleLine>
+          {isLogin ? (
+            <TitleLine>Hello!</TitleLine>
+          ) : (
+            <TitleLine>Frigo</TitleLine>
+          )}
         </TitleForm>
-        <LoginForm
-          onSubmit={handleSubmit(onVaild)}
-          action="http://frigo.com/login"
-        >
-          <EmailInput
-            {...register("email", {
-              required: "Email is required",
-              pattern: {
-                value:
-                  /^[0-9A-Z]([-_\.]?[0-9A-Z])*@[0-9A-Z]([-_\.]?[0-9A-Z])*\.[A-Z]{2,6}$/i,
-                message: "Please enter a valid email",
-              },
-            })}
-            placeholder="이메일을 입력하세요"
-          />
-          <ErrorMessage>{errors?.email?.message}</ErrorMessage>
-          <PasswordInput
-            {...register("password", {
-              required: "Password is required",
-              minLength: { value: 4, message: "Your password is too short" },
-            })}
-            placeholder="비밀번호를 입력하세요"
-          />
-          <ErrorMessage>{errors?.password?.message}</ErrorMessage>
-          <LoginBtn>Login</LoginBtn>
-          <CommentLine>
-            아직 회원가입을 하지 않으셨다면 <Link to="/signup">여기</Link>로
-            이동하세요
-          </CommentLine>
-        </LoginForm>
+        {isLogin ? null : (
+          <>
+            <LoginForm
+              onSubmit={handleSubmit(onVaild)}
+              action="http://frigo.com/login"
+            >
+              <EmailInput
+                {...register("email", {
+                  required: "Email is required",
+                  pattern: {
+                    value:
+                      /^[0-9A-Z]([-_\.]?[0-9A-Z])*@[0-9A-Z]([-_\.]?[0-9A-Z])*\.[A-Z]{2,6}$/i,
+                    message: "Please enter a valid email",
+                  },
+                })}
+                placeholder="이메일을 입력하세요"
+              />
+              <ErrorMessage>{errors?.email?.message}</ErrorMessage>
+              <PasswordInput
+                type="password"
+                {...register("password", {
+                  required: "Password is required",
+
+                  minLength: {
+                    value: 4,
+                    message: "Your password is too short",
+                  },
+                })}
+                placeholder="비밀번호를 입력하세요"
+              />
+              <ErrorMessage>{errors?.password?.message}</ErrorMessage>
+              <LoginBox>
+                <LoginBtn>Login</LoginBtn>
+                <GitHubBtn onClick={handleGitHub}>GitHub 로그인</GitHubBtn>
+              </LoginBox>
+
+              <CommentLine>
+                아직 회원가입을 하지 않으셨다면 <Link to="/signup">여기</Link>로
+                이동하세요
+              </CommentLine>
+            </LoginForm>
+          </>
+        )}
       </Center>
     </>
   );

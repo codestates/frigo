@@ -6,9 +6,9 @@ import RecipeListItem from "../Components/RecipeListItem";
 
 const RecipeList = styled.ul``;
 
-const Main = styled.main`
-  width: 100%;
-  margin: 0;
+const Wrapper = styled.div`
+  width: 92%;
+  margin-left: 30px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -18,6 +18,7 @@ const Main = styled.main`
 const SearchbarContainer = styled.div`
   width: 100%;
   display: flex;
+  padding-bottom: 30px;
 `;
 
 const SearchInput = styled.input`
@@ -25,6 +26,7 @@ const SearchInput = styled.input`
   font-size: ${(props) => props.theme.fontSize.small};
   text-align: left;
   justify-content: center;
+  //cursor: grab;
   width: 80%;
   height: 2rem;
   padding-left: 10px;
@@ -47,7 +49,7 @@ const SearchButton = styled.button`
   cursor: pointer;
 `;
 
-const EmptyListHolder = styled.span`
+const EmptyRecipeHolder = styled.span`
   padding-top: 50px;
   font-size: ${(props) => props.theme.fontSize.medium};
 `;
@@ -73,13 +75,14 @@ function Recipe() {
     setRecipes(list.COOKRCP01);
     setIsLoading(false);
   };
+  console.log(recipes.row);
 
   return (
     <>
       {isLoading ? (
         <Loading />
       ) : (
-        <Main>
+        <Wrapper>
           <SearchbarContainer>
             <SearchInput
               onChange={handleChange}
@@ -102,9 +105,11 @@ function Recipe() {
               ))}
             </RecipeList>
           ) : (
-            <EmptyListHolder>검색된 레시피가 없습니다</EmptyListHolder>
+            <EmptyRecipeHolder>
+              사용할 재료가 포함된 레시피가 검색됩니다
+            </EmptyRecipeHolder>
           )}
-        </Main>
+        </Wrapper>
       )}
     </>
   );

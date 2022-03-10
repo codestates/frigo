@@ -47,9 +47,13 @@ const Label = styled.div`
   font-size: ${(props) => props.theme.fontSize.medium};
 `;
 
-const ErrorMessage = styled.span``;
+const ErrorMessage = styled.span`
+  font-size: ${(props) => props.theme.fontSize.small};
+  color: ${(props) => props.theme.bgColor.red};
+  margin-bottom: 5px;
+`;
 
-function Mypage({ userinfo }) {
+function Mypage({ userinfo, accessToken }) {
   const navigate = useNavigate();
   const [errorMessage, setErrorMessage] = useState("");
   const {
@@ -60,16 +64,15 @@ function Mypage({ userinfo }) {
     setError,
   } = useForm({
     defaultValues: {
-      username: "",
-      //useifnfo props에서 유저네임 꺼내온다
+      username: userinfo?.username,
     },
   });
 
   const onVaild = async (data) => {
     if (data) {
-      const { username, newPassword, confirmPassword } = data;
+      const { username, password, confirmPassword } = data;
 
-      if (newPassword !== confirmPassword) {
+      if (password !== confirmPassword) {
         return setError(
           "confirmPassword",
           { message: "Password are not the same" },
@@ -77,33 +80,25 @@ function Mypage({ userinfo }) {
         );
       }
 
-      // if (username === userinfo.username) {
-      //   await axios.patch(
-      //     "https://localhost:3000/mypage",
-      //     {
-      //       password,
-      //     },
-      //     {
-      //       headers: { "Content-Type": "application/json" },
-      //       withCredentials: true,
-      //     },
-      //   );
-      //   navigate("/");
-      // }
-      if (newPassword === confirmPassword) {
-        await axios.patch(
-          "https://localhost:3000/mypage",
+      //닉네임 변경
+      if (username !== userinfo.username && password === confirmPassword) {
+        const data = await axios.patch(
+          `http://localhost:4000/mypage/${userinfo.id}`,
           {
             username,
+            password,
           },
           {
-            headers: { "Content-Type": "application/json" },
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: accessToken,
+            },
             withCredentials: true,
           },
         );
-        navigate("/");
+        navigate("/logout");
       } else {
-        setErrorMessage("양식에 맞게 입력하세요");
+        setErrorMessage("유저네임을 변경해주세요");
       }
     }
   };
@@ -120,9 +115,10 @@ function Mypage({ userinfo }) {
           placeholder="유저네임을 입력하세요(최소 2글자 이상)"
         />
         <ErrorMessage>{errors?.username?.message}</ErrorMessage>
-        <Label>New Password</Label>
+        <ErrorMessage>{errorMessage}</ErrorMessage>
+        <Label>Password</Label>
         <Input
-          {...register("newPassword", {
+          {...register("password", {
             required: "Password is required",
             minLength: { value: 4, message: "Your Password is too short" },
           })}
@@ -141,7 +137,7 @@ function Mypage({ userinfo }) {
           placeholder="비밀번호을 한번 더 입력해주세요"
         />
         <ErrorMessage>{errors?.confirmPassword?.message}</ErrorMessage>
-        <Btn>Edit</Btn>
+        <Btn>닉네임 변경</Btn>
       </Form>
     </Wrapper>
   );

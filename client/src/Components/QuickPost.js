@@ -21,7 +21,7 @@ const QuickPostBox = styled.div`
   justify-content: center;
   align-items: center;
   margin-top: 300px;
-  background-color: ${(props) => props.theme.bgColor.green};
+  background-color: ${(props) => props.theme.bgColor.cyan};
   position: relative;
 `;
 
@@ -64,20 +64,44 @@ const ExitBtn = styled.button`
   right: 30px;
 `;
 
-function QuickPost() {
+function QuickPost({ userinfo, accessToken }) {
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
+  const [show, setShow] = useState(true);
   const { tags } = useParams();
   const navigate = useNavigate();
-  const [show, setShow] = useState(true);
 
   const addPost = () => {
     setShow(false);
-    axios.post("https://localhost:3000/post").then((res) => {
-      //버튼 누르면 QuickPost창이 사라져야 한다
-    });
+    axios
+      .post(
+        `http://localhost:4000/quickpost`,
+        {
+          title,
+          tag: tags,
+          content,
+        },
+        {
+          headers: { "Content-Type": "application/json" },
+          Authorization: accessToken,
+          withCredentials: true,
+        },
+      )
+      .then((res) => {
+        navigate("/post");
+      });
   };
 
   const ExitPost = () => {
     setShow(false);
+  };
+
+  const titleOnChange = (e) => {
+    setTitle(e.target.value);
+  };
+
+  const contentOnChange = (e) => {
+    setContent(e.target.value);
   };
 
   return (
@@ -87,11 +111,11 @@ function QuickPost() {
           <QuickPostBox>
             <ExitBtn onClick={ExitPost}>X</ExitBtn>
             <Label>Title</Label>
-            <Input defaultValue="내 냉장고를 부탁해"></Input>
+            <Input onChange={titleOnChange}></Input>
             <Label>Tags</Label>
             <Input defaultValue={tags}></Input>
             <Label>Content</Label>
-            <Text defaultValue="레시피 추천 해주세요."></Text>
+            <Text onChange={contentOnChange}></Text>
             <Btn onClick={addPost}>Post</Btn>
           </QuickPostBox>
         </Wrapper>

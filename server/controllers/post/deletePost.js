@@ -1,13 +1,14 @@
-const { myfrigoFood } = require("../../models");
+const { post, comment } = require("../../models");
 const { isAuthorized } = require("../tokenFunctions");
 
 module.exports = (req, res) => {
-  const accessTokenData = isAuthorized(req.headers.authorization);
-  const { foodId } = req.params; // req.params는 foodId:2
+  const accessTokenData = isAuthorized(req);
+  const { id } = req.params;
 
   if (accessTokenData === null) {
     return res.status(401).send({ data: null, message: "not authorized" });
   }
-  myfrigoFood.destroy({ where: { id: foodId } });
+  comment.destroy({ where: { postId: id } });
+  post.destroy({ where: { id } });
   return res.status(201).send({ message: "ok" });
 };

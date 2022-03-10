@@ -12,6 +12,7 @@ export const lightTheme = {
   fontSize: {
     tiny: "13px",
     small: "20px",
+    smallLarge: "25px",
     medium: "35px",
     large: "45px",
     huge: "60px",

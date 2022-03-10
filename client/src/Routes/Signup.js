@@ -62,7 +62,7 @@ function Signup() {
 
   const onVaild = async (data) => {
     if (data) {
-      if (data.password !== data.confirmPassword) {
+      if (data.Password !== data.confirmPassword) {
         return setError(
           "confirmPassword",
           { message: "Password are not the same" },
@@ -70,10 +70,11 @@ function Signup() {
         );
       }
 
-      const { email, username, password } = data;
+      const { email, username } = data;
+      const password = data.Password;
 
       await axios.post(
-        "https://localhost:3000/signup",
+        "http://localhost:4000/signup",
         {
           email,
           username,

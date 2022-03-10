@@ -1,46 +1,48 @@
 import styled from "styled-components";
-import { useNavigate } from "react-router-dom";
 
-const Item = styled.ul`
+const RecipeItem = styled.li`
   list-style: none;
   width: 100%;
   align-items: center;
   text-align: center;
-  padding-top: 50px;
+  padding: 10px;
+  border: 3px solid black;
+  margin-bottom: 20px;
+  background-color: ${(props) => props.theme.bgColor.green};
 `;
 
-const FoodImg = styled.img`
+const RecipeFoodImg = styled.img`
   //background-color: ${(props) => props.theme.bgColor.black};
-  cursor: pointer;
-  width: 60%;
+  //cursor: pointer;
+  width: 400px;
   display: block;
   margin: 0px auto;
   //display: inline-block;
   padding-bottom: 10px;
 `;
 
-const ManualList = styled.li``;
+//const ManualList = styled.li``;
 
-const NameLine = styled.div`
+const RecipeName = styled.div`
   font-size: 30px;
   padding-top: 20px;
-  //width: 50%;
+  width: 400px;
   //display: absolute;
   display: block;
   text-align: center;
 `;
 
-const DtlsLine = styled.div`
+const RecipeDtls = styled.div`
   font-size: ${(props) => props.theme.fontSize.small};
   padding-top: 20px;
-  width: 60%;
+  width: 400px;
   //align-items: center;
   display: inline-block;
   text-align: left;
 `;
 
 function RecipeListItem({ id, name, img_path, dtls, math }) {
-  //console.log(math);
+  console.log(math);
 
   // let navigate = useNavigate();
   // const handleClick = () => {
@@ -48,12 +50,12 @@ function RecipeListItem({ id, name, img_path, dtls, math }) {
   // }
 
   return (
-    <Item>
-      {/* <FoodImg src={img_path} onClick={handleClick} /> */}
-      <FoodImg src={img_path} />
-      <NameLine>{name}</NameLine>
-      <DtlsLine>{dtls}</DtlsLine>
-    </Item>
+    <RecipeItem>
+      {/* <RecipeFoodImg src={img_path} onClick={handleClick} /> */}
+      <RecipeFoodImg src={img_path} />
+      <RecipeName>{name}</RecipeName>
+      <RecipeDtls>{dtls}</RecipeDtls>
+    </RecipeItem>
   );
 }
 
