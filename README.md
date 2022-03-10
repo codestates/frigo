@@ -1,4 +1,5 @@
-![logo-frigo](https://user-images.githubusercontent.com/87589600/155946639-fca08de1-7cd9-4c07-a727-9d330ebec834.jpeg)
+![logo-frigo](https://user-images.githubusercontent.com/87589600/157707415-d227567e-cf59-423c-be49-df03a0a60ff9.png)
+
 
 # ✨ Feature
 - 냉장고를 열어보지 않아도 어떤 식품이 있는지 확인할 수 있습니다.
