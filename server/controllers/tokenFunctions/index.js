@@ -16,9 +16,10 @@ module.exports = {
   },
 
   isAuthorized: (req) => {
-    const authorization = req;
+    // const authorization = req;
+    const authorization = req.headers.authorization;
     // console.log("여기여기", req.headers);
-    // console.log("여기여기", authorization);
+    // console.log("여기여기여기", authorization);
     if (!authorization) {
       return null;
     }

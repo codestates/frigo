@@ -12,6 +12,15 @@ module.exports = (sequelize, DataTypes) => {
       models.user.hasMany(models.myfrigoFood, {
         foreignKey: "userId",
       });
+      models.user.hasMany(models.post, {
+        foreignKey: "userId",
+      });
+      models.user.hasMany(models.comment, {
+        foreignKey: "userId",
+      });
+      models.user.hasMany(models.like, {
+        foreignKey: "userId",
+      });
     }
   }
   user.init(
